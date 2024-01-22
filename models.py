@@ -1,42 +1,38 @@
 
 from database import Base
-from sqlalchemy import  Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 
-
 class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    password = Column(String)
+    __tablename__ = "users"
+    email = Column(String, unique=True, index=True, primary_key=True)
     phone = Column(String)
+    name = Column(String)
+    password = Column(String)
     role = Column(String)
 
-
-class Customer(Base):
-    __tablename__ = 'customers'
-    id = Column(Integer, primary_key=True, index=True)
+class Teacher(Base):
+    __tablename__ = "teachers"
+    email = Column(String, ForeignKey("users.email"), primary_key=True)
+    phone = Column(String)
     name = Column(String)
-    dateOfBirth = Column(String)
-    address = Column(String)
-    nid = Column(String)
-    userID = Column(Integer, ForeignKey('users.id'))
+    batch = Column(String)
+    school = Column(String)
+    college = Column(String)
+    university = Column(String)
+    currentInsitute = Column(String)
    
 
-class Bus(Base):
-    __tablename__ = 'bus'
-    id = Column(Integer, primary_key=True, index=True)
-    companyName = Column(String)
-    licenseNo = Column(String)
-    userID = Column(Integer, ForeignKey('users.id'))
 
 
-
-   
-
-    
-
+class Student(Base):
+    __tablename__ = "students"
+    email = Column(String, ForeignKey("users.email"), primary_key=True)
+    phone = Column(String)
+    name = Column(String)
+    Class = Column(String)
+    school = Column(String)
+    college = Column(String)
 
     
-

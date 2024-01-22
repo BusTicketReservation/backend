@@ -12,87 +12,62 @@ router = APIRouter(
 )
 
 
-@router.post("/signupCustomer", response_model=schemas.CustomerOut)
-def signupCustomer(customer: schemas.CustomerSignUp, db: Session = Depends(database.get_db),
-                   status_code=201):
-    if db.query(models.User).filter(models.User.email == customer.email).first():
+@router.post("/signup", response_model=schemas.Student, status_code=201)
+def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db)):
+    if db.query(models.User).filter(models.User.email == student.email).first():
         raise HTTPException(status_code=400, detail="error")
-    
-    hashedPassword = utils.hash(customer.password)
-    user = models.User(email=customer.email, password=hashedPassword, phone=customer.phone, role="CUSTOMER")
+    user = models.User(email=student.email, phone=student.phone, name=student.name,
+                       password=utils.hash(student.password), role="student")
     db.add(user)
     db.commit()
     db.refresh(user)
-    customer = models.Customer(name=customer.name, dateOfBirth=customer.dateOfBirth, address=customer.address,
-                               userID=user.id,
-                               nid = customer.nid )
-    db.add(customer)
+
+    student = models.Student(email=student.email, phone=student.phone, name=student.name,
+                             Class=student.Class, school=student.school, college=student.college)
+    db.add(student)
     db.commit()
-    db.refresh(customer)
-
-    customerOut = schemas.CustomerOut(id=customer.id, name=customer.name, dateOfBirth=customer.dateOfBirth,
-                                        address=customer.address, email=user.email, phone=user.phone
-                                        , nid = customer.nid
-                                        )
-    return customerOut
+    db.refresh(student)
+    return student
 
 
-@router.post("/signupBus", response_model=schemas.BusOut,
-             status_code=201)
-def signupBus(bus: schemas.BusSignUp, db: Session = Depends(database.get_db)):
-    if db.query(models.User).filter(models.User.email == bus.email).first():
+@router.post("signup/teacher", response_model=schemas.Teacher, status_code=201)
+def signup_teacher(teacher: schemas.TeacherSignup, db: Session = Depends(database.get_db)):
+    if db.query(models.User).filter(models.User.email == teacher.email).first():
         raise HTTPException(status_code=400, detail="error")
-    
-    hashedPassword = utils.hash(bus.password)
-    user = models.User(email=bus.email, password=hashedPassword, phone=bus.phone, role="BUS")
+    user = models.User(email=teacher.email, phone=teacher.phone, name=teacher.name,
+                       password=utils.hash(teacher.password), role="teacher")
     db.add(user)
     db.commit()
     db.refresh(user)
-    bus = models.Bus(companyName=bus.companyName, licenseNo=bus.licenseNo, userID=user.id)
-    db.add(bus)
+
+    teacher = models.Teacher(email=teacher.email, phone=teacher.phone, name=teacher.name,
+                             batch=teacher.batch, school=teacher.school, college=teacher.college,
+                             university=teacher.university, currentInsitute=teacher.currentInsitute)
+    db.add(teacher)
     db.commit()
-    db.refresh(bus)
-
-    busOut = schemas.BusOut(id=bus.id, companyName=bus.companyName, licenseNo=bus.licenseNo, email=user.email,
-                            phone=user.phone)
-    return busOut
+    db.refresh(teacher)
+    return teacher
 
 
-@router.post("/signin", response_model=schemas.Token, status_code=200)
+@router.post("/signin", response_model=schemas.Token)
+def signin(
+    credential: schemas.UserSignin,
 
-def signIn(userCredentials: schemas.SignIn, db: Session = Depends(database.get_db)):
-    user = db.query(models.User).filter(models.User.email == userCredentials.email).first()
+    db: Session = Depends(database.get_db)
+):
+    user = db.query(models.User).filter(
+        models.User.email == credential.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="error")
-    if not utils.verify(userCredentials.password, user.password):
-        raise HTTPException(status_code=400, detail="error")
-    
-    accessToken = oauth2.createAccessToken(data={
-        "id": user.id,
+    if not utils.verify(credential.password, user.password):
+        raise HTTPException(status_code=404, detail="error")
+    access_token = oauth2.createAccessToken(data={
         "email": user.email,
         "role": user.role,
         "phone": user.phone,
-    })
+        "name": user.name
 
-    if user.role == "CUSTOMER":
-        customer = db.query(models.Customer).filter(models.Customer.userID == user.id).first()
-        tokenData = schemas.Token(
-            id=user.id,
-            accessToken=accessToken,
-            token_type="bearer",
-            email=user.email,
-            role=user.role,
-            name=customer.name
-        )
-    else:
-        bus = db.query(models.Bus).filter(models.Bus.userID == user.id).first()
-        tokenData = schemas.Token(
-            id=user.id,
-            accessToken=accessToken,
-            token_type="bearer",
-            email=user.email,
-            role=user.role,
-            name=bus.companyName
-        )
-    
+    })
+    tokenData = schemas.Token(name=user.name, email=user.email, role=user.role,
+                              accessToken=access_token, phone=user.phone, token_type="bearer")
     return tokenData

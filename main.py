@@ -7,10 +7,11 @@ import models,utils
 from database import engine
 
 from router import auth
+models.Base.metadata.create_all(bind=engine)
+
 
 
 app = FastAPI()
-models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,

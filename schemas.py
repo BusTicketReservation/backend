@@ -5,12 +5,12 @@ from pydantic import BaseModel, EmailStr
 
 
 class Token(BaseModel):
-    id:int
     accessToken: str
     token_type: str
     email:EmailStr
     role:str
     name:str
+    phone:str
 
 
 class TokenData(BaseModel):
@@ -23,54 +23,75 @@ class payload(BaseModel):
     role:str
     phone:str
     name:str
-    dateOfBirth:date
     
 
     class Config:
         orm_mode = True
 
-class CustomerSignUp(BaseModel):
-    name:str
+
+class User(BaseModel):
     email:EmailStr
+    phone:str
+    name:str
     password:str
-    phone:str
-    dateOfBirth:date
-    address:str
-    nid:str
+    role:str
 
+    class Config:
+        orm_mode = True
 
-
-
-class CustomerOut(BaseModel):
-    id:int
-    name:str
+class StudentSignup(BaseModel):
     email:EmailStr
     phone:str
-    dateOfBirth:date
-    address:str
-    nid:str
+    name:str
+    password:str
+    Class:str
+    school:str
+    college:str
+
+    class Config:
+        orm_mode = True
+
+class Student(BaseModel):
+    email:EmailStr
+    phone:str
+    name:str
+    Class:str
+    school:str
+    college:str
+
     class Config:
         orm_mode = True
 
 
-class BusSignUp(BaseModel):
-    companyName:str
+class TeacherSignup(BaseModel):
     email:EmailStr
+    phone:str
+    name:str
     password:str
-    phone:str
-    licenseNo:str
-
-class BusOut(BaseModel):
-    id:int
-    companyName:str
-    email:EmailStr
-    phone:str
-    licenseNo:str
+    batch:str
+    school:str
+    college:str
+    university:str
+    currentInsitute:str
     class Config:
         orm_mode = True
-    
-class SignIn(BaseModel):
+
+class Teacher(BaseModel):
+    email:EmailStr
+    phone:str
+    name:str
+    batch:str
+    school:str
+    college:str
+    university:str
+    currentInsitute:str
+    class Config:
+        orm_mode = True
+
+
+class UserSignin(BaseModel):
     email:EmailStr
     password:str
 
-
+    class Config:
+        orm_mode = True
