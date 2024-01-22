@@ -17,7 +17,7 @@ def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db
     if db.query(models.User).filter(models.User.email == student.email).first():
         raise HTTPException(status_code=400, detail="error")
     user = models.User(email=student.email, phone=student.phone, name=student.name,
-                       password=utils.hash(student.password), role="student")
+                       password=utils.hash(student.password), role="STUDENT")
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -35,7 +35,7 @@ def signup_teacher(teacher: schemas.TeacherSignup, db: Session = Depends(databas
     if db.query(models.User).filter(models.User.email == teacher.email).first():
         raise HTTPException(status_code=400, detail="error")
     user = models.User(email=teacher.email, phone=teacher.phone, name=teacher.name,
-                       password=utils.hash(teacher.password), role="teacher")
+                       password=utils.hash(teacher.password), role="TEACHER")
     db.add(user)
     db.commit()
     db.refresh(user)
