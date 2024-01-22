@@ -35,4 +35,12 @@ class Student(Base):
     school = Column(String)
     college = Column(String)
 
+
+class Founder(Base):
+    __tablename__ = "founders"
+    email = Column(String, ForeignKey("users.email"), primary_key=True)
+    phone = Column(String)
+    name = Column(String)
+    position = Column(String)
+
     

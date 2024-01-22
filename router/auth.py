@@ -30,7 +30,7 @@ def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db
     return student
 
 
-@router.post("signup/teacher", response_model=schemas.Teacher, status_code=201)
+@router.post("/signup/teacher", response_model=schemas.Teacher, status_code=201)
 def signup_teacher(teacher: schemas.TeacherSignup, db: Session = Depends(database.get_db)):
     if db.query(models.User).filter(models.User.email == teacher.email).first():
         raise HTTPException(status_code=400, detail="error")
@@ -71,3 +71,21 @@ def signin(
     tokenData = schemas.Token(name=user.name, email=user.email, role=user.role,
                               accessToken=access_token, phone=user.phone, token_type="bearer")
     return tokenData
+
+
+@router.post("/signup/founders", response_model=schemas.Founder, status_code=201)
+def signup_founder(founder: schemas.FounderSignup, db: Session = Depends(database.get_db)):
+    if db.query(models.User).filter(models.User.email == founder.email).first():
+        raise HTTPException(status_code=400, detail="error")
+    user = models.User(email=founder.email, phone=founder.phone, name=founder.name,
+                       password=utils.hash(founder.password), role="FOUNDER")
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    founder = models.Founder(email=founder.email, phone=founder.phone, name=founder.name,
+                             position=founder.position)
+    db.add(founder)
+    db.commit()
+    db.refresh(founder)
+    return founder

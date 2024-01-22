@@ -95,3 +95,24 @@ class UserSignin(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+
+class FounderSignup(BaseModel):
+    email:EmailStr
+    phone:str
+    name:str
+    password:str
+    position:str
+
+    class Config:
+        orm_mode = True
+
+class Founder(BaseModel):
+    email:EmailStr
+    phone:str
+    name:str
+    position:str
+
+    class Config:
+        orm_mode = True
