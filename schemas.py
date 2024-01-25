@@ -14,11 +14,10 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    id:int
+    email:EmailStr
 
 
 class payload(BaseModel):
-    id:int
     email:EmailStr
     role:str
     phone:str
@@ -67,10 +66,10 @@ class TeacherSignup(BaseModel):
     name:str
     password:str
     batch:str
-    school:str
     college:str
     university:str
-    currentInsitute:str
+    department:str
+    subject:str
     class Config:
         orm_mode = True
 
@@ -79,10 +78,10 @@ class Teacher(BaseModel):
     phone:str
     name:str
     batch:str
-    school:str
     college:str
     university:str
-    currentInsitute:str
+    department:str
+    subject:str
     class Config:
         orm_mode = True
 

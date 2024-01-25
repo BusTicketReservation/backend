@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import models,utils
 from database import engine
 
-from router import auth
+from router import auth, founder, student
 models.Base.metadata.create_all(bind=engine)
 
 
@@ -24,6 +24,9 @@ app.add_middleware(
 
 app.include_router(auth.router)
 
+app.include_router(founder.router)
+
+app.include_router(student.router)
 
 
 

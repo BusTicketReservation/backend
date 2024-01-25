@@ -18,10 +18,10 @@ class Teacher(Base):
     phone = Column(String)
     name = Column(String)
     batch = Column(String)
-    school = Column(String)
     college = Column(String)
     university = Column(String)
-    currentInsitute = Column(String)
+    department = Column(String)
+    subject = Column(String)
    
 
 
@@ -33,6 +33,7 @@ class Student(Base):
     name = Column(String)
     school = Column(String)
     college = Column(String)
+
 
 
 class Founder(Base):

@@ -30,25 +30,6 @@ def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db
     return student
 
 
-@router.post("/signup/teacher", response_model=schemas.Teacher, status_code=201)
-def signup_teacher(teacher: schemas.TeacherSignup, db: Session = Depends(database.get_db)):
-    if db.query(models.User).filter(models.User.email == teacher.email).first():
-        raise HTTPException(status_code=400, detail="error")
-    user = models.User(email=teacher.email, phone=teacher.phone, name=teacher.name,
-                       password=utils.hash(teacher.password), role="TEACHER")
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-
-    teacher = models.Teacher(email=teacher.email, phone=teacher.phone, name=teacher.name,
-                             batch=teacher.batch, school=teacher.school, college=teacher.college,
-                             university=teacher.university, currentInsitute=teacher.currentInsitute)
-    db.add(teacher)
-    db.commit()
-    db.refresh(teacher)
-    return teacher
-
-
 @router.post("/signin", response_model=schemas.Token)
 def signin(
     credential: schemas.UserSignin,
@@ -69,7 +50,7 @@ def signin(
 
     })
     tokenData = schemas.Token(name=user.name, email=user.email, role=user.role,
-                              accessToken=access_token, phone=user.phone, token_type="bearer")
+                              accessToken=access_token, phone=user.phone, token_type="Bearer")
     return tokenData
 
 
