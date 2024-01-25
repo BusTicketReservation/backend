@@ -23,7 +23,7 @@ def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db
     db.refresh(user)
 
     student = models.Student(email=student.email, phone=student.phone, name=student.name,
-                             Class=student.Class, school=student.school, college=student.college)
+                             school=student.school, college=student.college)
     db.add(student)
     db.commit()
     db.refresh(student)

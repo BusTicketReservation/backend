@@ -31,7 +31,6 @@ class Student(Base):
     email = Column(String, ForeignKey("users.email"), primary_key=True)
     phone = Column(String)
     name = Column(String)
-    Class = Column(String)
     school = Column(String)
     college = Column(String)
 

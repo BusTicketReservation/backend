@@ -44,7 +44,6 @@ class StudentSignup(BaseModel):
     phone:str
     name:str
     password:str
-    Class:str
     school:str
     college:str
 
@@ -55,7 +54,6 @@ class Student(BaseModel):
     email:EmailStr
     phone:str
     name:str
-    Class:str
     school:str
     college:str
 
