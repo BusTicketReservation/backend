@@ -31,6 +31,8 @@ def registerTeachers(teacher: schemas.TeacherSignup, db: Session = Depends(datab
     db.add(teacher)
     db.commit()
     db.refresh(teacher)
+
+    
     return teacher
 
 

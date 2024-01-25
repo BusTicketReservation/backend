@@ -113,3 +113,12 @@ class Founder(BaseModel):
 
     class Config:
         orm_mode = True
+
+class StudentUpdate(BaseModel):
+    name:str
+    phone:str
+    school:str
+    college:str
+
+    class Config:
+        orm_mode = True
