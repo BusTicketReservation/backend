@@ -14,7 +14,7 @@ router = APIRouter(
 @router.get("/student/profile", response_model=schemas.Student, status_code=200)
 def getStudentProfile(db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
     if currentUser.role != "STUDENT" and db.query(models.Student).filter(models.Student.email != currentUser.email).first():
-        raise HTTPException(status_code=400, detail="error")
+        raise HTTPException(status_code=400, detail="emailError")
     student = db.query(models.Student).filter(
         models.Student.email == currentUser.email).first()
     return student
@@ -23,7 +23,7 @@ def getStudentProfile(db: Session = Depends(database.get_db), currentUser=Depend
 @router.put("/student/profileUpdate", response_model=schemas.Student, status_code=200)
 def updateStudentProfile(updateInfo: schemas.StudentUpdate, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
     if currentUser.role != "STUDENT" and db.query(models.Student).filter(models.Student.email != currentUser.email).first():
-        raise HTTPException(status_code=400, detail="error")
+        raise HTTPException(status_code=400, detail="emailError")
     student = db.query(models.Student).filter(
         models.Student.email == currentUser.email).first()
     student.name = updateInfo.name

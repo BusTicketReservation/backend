@@ -122,3 +122,11 @@ class StudentUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+#practice
+    
+class Remove(BaseModel):
+    email:EmailStr
+    class Config:
+        orm_mode = True

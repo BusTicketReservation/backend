@@ -18,7 +18,7 @@ def registerTeachers(teacher: schemas.TeacherSignup, db: Session = Depends(datab
     if currentUser.role != "FOUNDER":
         raise HTTPException(status_code=400, detail="error")
     if db.query(models.User).filter(models.User.email == teacher.email).first():
-        raise HTTPException(status_code=400, detail="error")
+        raise HTTPException(status_code=400, detail="emailError")
     user = models.User(email=teacher.email, phone=teacher.phone, name=teacher.name,
                        password=utils.hash(teacher.password), role="TEACHER")
     db.add(user)

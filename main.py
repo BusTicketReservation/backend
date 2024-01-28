@@ -7,7 +7,7 @@ import models
 import utils
 from database import engine
 
-from router import auth, founder, student
+from router import auth, founder, student, practice
 models.Base.metadata.create_all(bind=engine)
 
 
@@ -27,3 +27,5 @@ app.include_router(auth.router)
 app.include_router(founder.router)
 
 app.include_router(student.router)
+
+app.include_router(practice.router)
