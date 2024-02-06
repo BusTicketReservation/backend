@@ -136,6 +136,15 @@ class TeacherUpdate(BaseModel):
         orm_mode = True
 
 
+class FounderUpdate(BaseModel):
+    name:str
+    phone:str
+    position:str
+
+    class Config:
+        orm_mode = True
+
+
 #practice
     
 class Remove(BaseModel):
