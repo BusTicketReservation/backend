@@ -7,8 +7,11 @@ import models
 import utils
 from database import engine
 
-from router import auth, founder, student, practice
+from router import auth, founder, student, practice, teacher
+
+import config
 models.Base.metadata.create_all(bind=engine)
+
 
 
 app = FastAPI()
@@ -29,3 +32,5 @@ app.include_router(founder.router)
 app.include_router(student.router)
 
 app.include_router(practice.router)
+
+app.include_router(teacher.router)

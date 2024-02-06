@@ -39,7 +39,7 @@ def signin(
     user = db.query(models.User).filter(
         models.User.email == credential.email).first()
     if not user:
-        raise HTTPException(status_code=404, detail="error")
+        raise HTTPException(status_code=404, detail="emailError")
     if not utils.verify(credential.password, user.password):
         raise HTTPException(status_code=404, detail="passwordError")
     access_token = oauth2.createAccessToken(data={

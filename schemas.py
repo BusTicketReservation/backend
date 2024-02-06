@@ -123,6 +123,18 @@ class StudentUpdate(BaseModel):
     class Config:
         orm_mode = True
 
+class TeacherUpdate(BaseModel):
+    name:str
+    phone:str
+    batch:str
+    college:str
+    university:str
+    department:str
+    subject:str
+
+    class Config:
+        orm_mode = True
+
 
 #practice
     

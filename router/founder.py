@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 
 
 router = APIRouter(
-    tags=["Founder"]
+    tags=["Founder"],
+    prefix="/founder"
 )
 
 

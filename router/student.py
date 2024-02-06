@@ -7,11 +7,12 @@ from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 
 router = APIRouter(
-    tags=["Student"]
+    tags=["Student"],
+    prefix="/student"
 )
 
 
-@router.get("/student/profile", response_model=schemas.Student, status_code=200)
+@router.get("/profile", response_model=schemas.Student, status_code=200)
 def getStudentProfile(db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
     if currentUser.role != "STUDENT" and db.query(models.Student).filter(models.Student.email != currentUser.email).first():
         raise HTTPException(status_code=400, detail="emailError")
@@ -20,7 +21,7 @@ def getStudentProfile(db: Session = Depends(database.get_db), currentUser=Depend
     return student
 
 
-@router.put("/student/profileUpdate", response_model=schemas.Student, status_code=200)
+@router.put("/profileUpdate", response_model=schemas.Student, status_code=200)
 def updateStudentProfile(updateInfo: schemas.StudentUpdate, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
     if currentUser.role != "STUDENT" and db.query(models.Student).filter(models.Student.email != currentUser.email).first():
         raise HTTPException(status_code=400, detail="emailError")
