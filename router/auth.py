@@ -47,7 +47,10 @@ def signin(
     db: Session = Depends(database.get_db)
 ):
     user = db.query(models.User).filter(
-        models.User.email == credential.email or models.User.userName == credential.email).first()
+        (models.User.email == credential.email) |
+        (models.User.userName == credential.email)
+    ).first()
+
     if not user:
         raise HTTPException(status_code=404, detail="emailError")
     if not utils.verify(credential.password, user.password):
