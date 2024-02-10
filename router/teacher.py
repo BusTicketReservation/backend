@@ -5,6 +5,10 @@ import oauth2
 import database
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
+from fastapi import WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
+
+manager = utils.connectionManager()
 
 router = APIRouter(
     tags=["Teacher"],
@@ -46,3 +50,27 @@ def updateTeacherProfile(updateInfo: schemas.TeacherUpdate, db: Session = Depend
     db.refresh(user)
 
     return teacher
+
+@router.websocket("/ws/{student_email}")
+async def websocket_endpoint(websocket: WebSocket, student_email: str, 
+                             db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+    
+    if currentUser.role != "TEACHER":
+        await websocket.close()
+        raise HTTPException(status_code=400, detail="error")
+    
+    await manager.connect(websocket, student_email)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            senderEmail = currentUser.email
+            receiverEmail = student_email
+            message = models.Message(sender=senderEmail, receiver=receiverEmail, message=data)
+            db.add(message)
+            db.commit()
+            db.refresh(message)
+            await manager.send_personal_message(f"{message.sender}: {message.message}", websocket)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket, student_email)
+        await manager.broadcast(f"Client {student_email} left the chat")
+    

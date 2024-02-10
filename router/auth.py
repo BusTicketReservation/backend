@@ -16,17 +16,27 @@ router = APIRouter(
 def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db)):
     if db.query(models.User).filter(models.User.email == student.email).first():
         raise HTTPException(status_code=400, detail="emailError")
+    userName = utils.createUserName(student.name)
+    while True:
+        if not db.query(models.User).filter(models.User.userName == userName).first():
+            break
+        userName = utils.createUserName(student.name)
+    student.phone = str("+88")+student.phone
     user = models.User(email=student.email, phone=student.phone, name=student.name,
-                       password=utils.hash(student.password), role="STUDENT")
+                       password=utils.hash(student.password), role="STUDENT", userName=userName)
     db.add(user)
     db.commit()
     db.refresh(user)
 
     student = models.Student(email=student.email, phone=student.phone, name=student.name,
-                             school=student.school, college=student.college)
+                             school=student.school, college=student.college, userName=userName)
     db.add(student)
     db.commit()
     db.refresh(student)
+
+    utils.sendEmail("Welcome to our platform",
+                    f"Hello {student.name}, Welcome to our platform. Your username is {userName}. You can use this username to login to our platform. Thank you.", student.email)
+
     return student
 
 
@@ -42,15 +52,12 @@ def signin(
         raise HTTPException(status_code=404, detail="emailError")
     if not utils.verify(credential.password, user.password):
         raise HTTPException(status_code=404, detail="passwordError")
-    access_token = oauth2.createAccessToken(data={
-        "email": user.email,
-        "role": user.role,
-        "phone": user.phone,
-        "name": user.name
 
-    })
+    access_token = oauth2.createAccessToken(
+        data={"email": user.email, "role": user.role, "name": user.name, "phone": user.phone, "userName": user.userName})
+
     tokenData = schemas.Token(name=user.name, email=user.email, role=user.role,
-                              accessToken=access_token, phone=user.phone, token_type="Bearer")
+                              accessToken=access_token, phone=user.phone, token_type="Bearer", userName=user.userName)
     return tokenData
 
 
@@ -58,15 +65,25 @@ def signin(
 def signup_founder(founder: schemas.FounderSignup, db: Session = Depends(database.get_db)):
     if db.query(models.User).filter(models.User.email == founder.email).first():
         raise HTTPException(status_code=400, detail="emailError")
+
+    userName = utils.createUserName(founder.name)
+    while True:
+        if not db.query(models.User).filter(models.User.userName == userName).first():
+            break
+        userName = utils.createUserName(founder.name)
+    founder.phone = str("+88")+founder.phone
     user = models.User(email=founder.email, phone=founder.phone, name=founder.name,
-                       password=utils.hash(founder.password), role="FOUNDER")
+                       password=utils.hash(founder.password), role="FOUNDER", userName=userName)
     db.add(user)
     db.commit()
     db.refresh(user)
 
     founder = models.Founder(email=founder.email, phone=founder.phone, name=founder.name,
-                             position=founder.position)
+                             position=founder.position, userName=userName)
     db.add(founder)
     db.commit()
     db.refresh(founder)
+
+    utils.sendEmail("Welcome to our platform",
+                    f"Hello {founder.name}, Welcome to our platform. Your username is {userName}. You can use this username to login to our platform. Thank you.", founder.email)
     return founder

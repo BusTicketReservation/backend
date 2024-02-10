@@ -11,6 +11,7 @@ class Token(BaseModel):
     role:str
     name:str
     phone:str
+    userName:str
 
 
 class TokenData(BaseModel):
@@ -22,6 +23,7 @@ class payload(BaseModel):
     role:str
     phone:str
     name:str
+    userName:str
     
 
     class Config:
@@ -34,6 +36,7 @@ class User(BaseModel):
     name:str
     password:str
     role:str
+    userName:str
 
     class Config:
         orm_mode = True
@@ -46,6 +49,7 @@ class StudentSignup(BaseModel):
     school:str
     college:str
 
+
     class Config:
         orm_mode = True
 
@@ -55,6 +59,7 @@ class Student(BaseModel):
     name:str
     school:str
     college:str
+    userName:str
 
     class Config:
         orm_mode = True
@@ -82,6 +87,7 @@ class Teacher(BaseModel):
     university:str
     department:str
     subject:str
+    userName:str
     class Config:
         orm_mode = True
 
@@ -110,6 +116,7 @@ class Founder(BaseModel):
     phone:str
     name:str
     position:str
+    userName:str
 
     class Config:
         orm_mode = True
@@ -143,6 +150,43 @@ class FounderUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Message(BaseModel):
+    pass 
+
+
+class Course(BaseModel):
+    name : str
+    description : str
+    duration : int
+    startDate : date
+    fees : int
+    discount : int
+    discountUpTo : date
+    teachersUserName : List[str]
+
+
+    class Config:
+        orm_mode = True
+
+class CourseResponse(BaseModel):
+    name : str
+    description : str
+    duration : int
+    startDate : date
+    fees : int
+    discount : int
+    discountUpTo : date
+    teacher : List[Teacher]
+
+    class Config:
+        orm_mode = True
+
+
+
+
+
 
 
 #practice
