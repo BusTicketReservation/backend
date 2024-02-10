@@ -14,6 +14,7 @@ from datetime import datetime, timedelta
 from email.message import EmailMessage
 import ssl
 import smtplib
+import config
 
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -21,8 +22,8 @@ pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 logging.basicConfig(level=logging.INFO)
 
 
-emailSender = "dibbyoroy7@gmail.com"
-emailPassword = "iuug vgbn wkew srpu"
+emailSender = config.Settings.email_sender
+emailPassword = config.Settings.email_password
 
 
 def hash(password: str):
@@ -61,8 +62,6 @@ def createUserName(name: str):
     if len(name) == 1:
         userName = name[0]+str(random.randint(0, 9999))
 
-    
-     
     else:
         userName = name[0]+name[1]+str(random.randint(0, 9999))
     return userName

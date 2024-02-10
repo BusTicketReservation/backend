@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from sqlalchemy import DateTime
 
 
-
 class User(Base):
     __tablename__ = "users"
     email = Column(String, unique=True, index=True, primary_key=True)
@@ -31,7 +30,6 @@ class Teacher(Base):
     userName = Column(String)
 
 
-
 class Student(Base):
     __tablename__ = "students"
     email = Column(String, ForeignKey("users.email"), primary_key=True)
@@ -42,7 +40,6 @@ class Student(Base):
     userName = Column(String)
 
 
-
 class Founder(Base):
     __tablename__ = "founders"
     email = Column(String, ForeignKey("users.email"), primary_key=True)
@@ -51,7 +48,6 @@ class Founder(Base):
     position = Column(String)
     userName = Column(String)
 
-    
 
 class Message(Base):
     __tablename__ = "messages"
@@ -73,7 +69,8 @@ class Courses(Base):
 
 class CourseFees(Base):
     __tablename__ = "courseFees"
-    courseID = Column(Integer, ForeignKey("courses.id"), primary_key=True, index=True)
+    courseID = Column(Integer, ForeignKey("courses.id"),
+                      primary_key=True, index=True)
     fees = Column(Integer)
     discount = Column(Integer)
     discountUpTo = Column(DateTime)
@@ -87,11 +84,10 @@ class CourseEnrollment(Base):
     studentUserName = Column(String)
     enrollmentDate = Column(DateTime, default=datetime.utcnow)
 
+
 class CourseTeacher(Base):
     __tablename__ = "courseTeachers"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     courseID = Column(Integer, ForeignKey("courses.id"))
     teacherEmail = Column(String, ForeignKey("teachers.email"))
     teacherUserName = Column(String)
-    
-

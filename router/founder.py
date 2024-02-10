@@ -78,14 +78,13 @@ def updateProfile(updateInfo: schemas.FounderUpdate, db: Session = Depends(datab
 
 
 @router.post("/addCourses", response_model=dict,
-            status_code=201)
+             status_code=201)
 def addCourses(getCourse: schemas.Course, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
 
-    
     if currentUser.role != "FOUNDER":
         raise HTTPException(status_code=400, detail="error")
     course = models.Courses(name=getCourse.name, description=getCourse.description,
-                           duration=getCourse.duration, startDate=getCourse.startDate)
+                            duration=getCourse.duration, startDate=getCourse.startDate)
     db.add(course)
     db.commit()
     db.refresh(course)
@@ -97,8 +96,6 @@ def addCourses(getCourse: schemas.Course, db: Session = Depends(database.get_db)
     db.refresh(courseFees)
 
     getTeacher = []
-
-
 
     for teacher in getCourse.teachersUserName:
         teacher = db.query(models.Teacher).filter(
@@ -134,5 +131,3 @@ def addCourses(getCourse: schemas.Course, db: Session = Depends(database.get_db)
         ]
     }
     return responseData
-
-
