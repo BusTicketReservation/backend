@@ -2,6 +2,7 @@ from datetime import date
 
 from typing import List
 from pydantic import BaseModel, EmailStr
+from typing import Union
 
 
 class Token(BaseModel):
@@ -93,7 +94,7 @@ class Teacher(BaseModel):
 
 
 class UserSignin(BaseModel):
-    email:EmailStr
+    email:Union [EmailStr,str]
     password:str
 
     class Config:
