@@ -43,7 +43,6 @@ def signup(student: schemas.StudentSignup, db: Session = Depends(database.get_db
 @router.post("/signin", response_model=schemas.Token)
 def signin(
     credential: schemas.UserSignin,
-
     db: Session = Depends(database.get_db)
 ):
     user = db.query(models.User).filter(

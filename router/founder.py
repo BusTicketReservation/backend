@@ -131,3 +131,87 @@ def addCourses(getCourse: schemas.Course, db: Session = Depends(database.get_db)
         ]
     }
     return responseData
+
+
+@router.get("/searchTeacher", response_model=dict,
+            status_code=200)
+def searchTeacher(search: str, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+    if currentUser.role != "FOUNDER":
+        raise HTTPException(status_code=400, detail="error")
+    teacher = db.query(models.Teacher).filter(
+        models.Teacher.name.like(f"%{search}%")).all()
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.department.like(f"%{search}%")).all()
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.subject.like(f"%{search}%")).all()
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.batch.like(f"%{search}%")).all()
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.college.like(f"%{search}%")).all()
+    
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.university.like(f"%{search}%")).all()
+    
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.email.like(f"%{search}%")).all()
+    
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.phone.like(f"%{search}%")).all()
+    
+    teacher+= db.query(models.Teacher).filter(
+        models.Teacher.userName.like(f"%{search}%")).all()
+    
+    teacher = list(set(teacher))
+
+
+    return {
+        "teacher": [
+            {
+                "name": teacher.name,
+                "batch": teacher.batch,
+                "college": teacher.college,
+                "university": teacher.university,
+                "department": teacher.department,
+                "subject": teacher.subject,
+                "email": teacher.email,
+                "phone": teacher.phone
+            }
+            for teacher in teacher
+        ]
+    }
+
+
+
+@router.get("/searchStudent", response_model=dict,
+            status_code=200)
+
+def searchStudent(search: str, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+
+    if currentUser.role != "FOUNDER":
+        raise HTTPException(status_code=400, detail="error")
+    student = db.query(models.Student).filter(
+        models.Student.name.like(f"%{search}%")).all()
+    student += db.query(models.Student).filter(
+        models.Student.school.like(f"%{search}%")).all()
+    student += db.query(models.Student).filter(
+        models.Student.college.like(f"%{search}%")).all()
+    student += db.query(models.Student).filter(
+        models.Student.email.like(f"%{search}%")).all()
+    student += db.query(models.Student).filter(
+        models.Student.phone.like(f"%{search}%")).all()
+    student += db.query(models.Student).filter(
+        models.Student.userName.like(f"%{search}%")).all()
+    student = list(set(student))
+
+    return {
+        "student": [
+            {
+                "name": student.name,
+                "school": student.school,
+                "college": student.college,
+                "email": student.email,
+                "phone": student.phone
+            }
+            for student in student
+        ]
+    }
