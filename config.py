@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int
     email_password : str
     email_sender: str
+    api_key : str
 
     class Config:
         env_file = ".env"

@@ -16,6 +16,7 @@ import ssl
 import smtplib
 import config
 
+
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -79,3 +80,7 @@ def sendEmail(subject: str, body: str, receiver_email: str):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
         server.login(emailSender, emailPassword)
         server.send_message(message)
+
+
+
+    
