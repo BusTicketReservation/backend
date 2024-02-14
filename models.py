@@ -91,3 +91,5 @@ class CourseTeacher(Base):
     courseID = Column(Integer, ForeignKey("courses.id"))
     teacherEmail = Column(String, ForeignKey("teachers.email"))
     teacherUserName = Column(String)
+
+

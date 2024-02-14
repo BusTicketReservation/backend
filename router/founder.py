@@ -148,21 +148,20 @@ def searchTeacher(search: str, db: Session = Depends(database.get_db), currentUs
         models.Teacher.batch.like(f"%{search}%")).all()
     teacher += db.query(models.Teacher).filter(
         models.Teacher.college.like(f"%{search}%")).all()
-    
+
     teacher += db.query(models.Teacher).filter(
         models.Teacher.university.like(f"%{search}%")).all()
-    
+
     teacher += db.query(models.Teacher).filter(
         models.Teacher.email.like(f"%{search}%")).all()
-    
+
     teacher += db.query(models.Teacher).filter(
         models.Teacher.phone.like(f"%{search}%")).all()
-    
-    teacher+= db.query(models.Teacher).filter(
-        models.Teacher.userName.like(f"%{search}%")).all()
-    
-    teacher = list(set(teacher))
 
+    teacher += db.query(models.Teacher).filter(
+        models.Teacher.userName.like(f"%{search}%")).all()
+
+    teacher = list(set(teacher))
 
     return {
         "teacher": [
@@ -174,17 +173,16 @@ def searchTeacher(search: str, db: Session = Depends(database.get_db), currentUs
                 "department": teacher.department,
                 "subject": teacher.subject,
                 "email": teacher.email,
-                "phone": teacher.phone
+                "phone": teacher.phone,
+                "userName": teacher.userName,
             }
             for teacher in teacher
         ]
     }
 
 
-
 @router.get("/searchStudent", response_model=dict,
             status_code=200)
-
 def searchStudent(search: str, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
 
     if currentUser.role != "FOUNDER":
@@ -210,8 +208,11 @@ def searchStudent(search: str, db: Session = Depends(database.get_db), currentUs
                 "school": student.school,
                 "college": student.college,
                 "email": student.email,
-                "phone": student.phone
+                "phone": student.phone,
+                "userName": student.userName,
             }
             for student in student
         ]
     }
+
+

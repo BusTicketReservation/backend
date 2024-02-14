@@ -8,9 +8,9 @@ router = APIRouter(
     prefix="/chatBot"
 )
 
+
 @router.get("/", response_model=dict,
             status_code=200)
-
 def getAnswer(question: str):
     response = ai.getAnswer(question)
     return JSONResponse(content={"response": response})
