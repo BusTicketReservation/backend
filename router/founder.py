@@ -225,6 +225,11 @@ def deleteCourse(courseID: int, db: Session = Depends(database.get_db), currentU
 
     course = db.query(models.Courses).filter(
         models.Courses.id == courseID).first()
+    if not course:
+        raise HTTPException(status_code=400, detail="courseError")
+    
+    
+
     courseTeacher = db.query(models.CourseTeacher).filter(
         models.CourseTeacher.courseID == courseID).all()
     for teacher in courseTeacher:
