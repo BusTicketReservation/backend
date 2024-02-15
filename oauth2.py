@@ -6,17 +6,24 @@ import database
 import models
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+import config
 
 oauthScheme = OAuth2PasswordBearer(tokenUrl="login")
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 24*60
+SECRET_KEY = config.Settings.secret_key
+ALGORITHM = config.Settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = config.Settings.access_token_expire_minutes
+
+
+# SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+# ALGORITHM = "HS256"
+# ACCESS_TOKEN_EXPIRE_MINUTES = 24*60
 
 
 def createAccessToken(data: dict):
+
     toEncode = data.copy()
 
-    expire = datetime.utcnow()+timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
     toEncode.update({"exp": expire})
 
     encodedJWT = jwt.encode(toEncode, SECRET_KEY, algorithm=ALGORITHM)
@@ -32,7 +39,6 @@ def verifyAccessToken(Token: str, credentialException):
         if email is None:
             raise credentialException
         tokenData = schemas.TokenData(email=email)
-
     except JWTError as e:
         print(e)
         raise credentialException
