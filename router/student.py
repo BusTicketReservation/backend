@@ -48,6 +48,13 @@ def updateStudentProfile(updateInfo: schemas.StudentUpdate, db: Session = Depend
     return student
 
 
+
+
+
+
+
+
+
 @router.websocket("/ws/{teacher_email}")
 async def websocket_endpoint(websocket: WebSocket, teacher_email: str, 
                              db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):

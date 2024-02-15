@@ -17,6 +17,16 @@ class User(Base):
     userName = Column(String, unique=True, index=True)
 
 
+class Student(Base):
+    __tablename__ = "students"
+    email = Column(String, ForeignKey("users.email"), primary_key=True)
+    phone = Column(String)
+    name = Column(String)
+    school = Column(String)
+    college = Column(String)
+    userName = Column(String)
+
+
 class Teacher(Base):
     __tablename__ = "teachers"
     email = Column(String, ForeignKey("users.email"), primary_key=True)
@@ -27,16 +37,6 @@ class Teacher(Base):
     university = Column(String)
     department = Column(String)
     subject = Column(String)
-    userName = Column(String)
-
-
-class Student(Base):
-    __tablename__ = "students"
-    email = Column(String, ForeignKey("users.email"), primary_key=True)
-    phone = Column(String)
-    name = Column(String)
-    school = Column(String)
-    college = Column(String)
     userName = Column(String)
 
 
@@ -91,5 +91,3 @@ class CourseTeacher(Base):
     courseID = Column(Integer, ForeignKey("courses.id"))
     teacherEmail = Column(String, ForeignKey("teachers.email"))
     teacherUserName = Column(String)
-
-

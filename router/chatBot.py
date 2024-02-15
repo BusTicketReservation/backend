@@ -2,6 +2,8 @@ import ai
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import HTMLResponse
 
 router = APIRouter(
     tags=["ChatBot"],
@@ -13,4 +15,4 @@ router = APIRouter(
             status_code=200)
 def getAnswer(question: str):
     response = ai.getAnswer(question)
-    return JSONResponse(content={"response": response})
+    return HTMLResponse(response)

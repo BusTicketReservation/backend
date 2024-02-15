@@ -216,3 +216,28 @@ def searchStudent(search: str, db: Session = Depends(database.get_db), currentUs
     }
 
 
+@router.delete("/deleteCourse/{courseID}", response_model=dict,
+               status_code=200)
+def deleteCourse(courseID: int, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+
+    if currentUser.role != "FOUNDER":
+        raise HTTPException(status_code=400, detail="error")
+
+    course = db.query(models.Courses).filter(
+        models.Courses.id == courseID).first()
+    courseTeacher = db.query(models.CourseTeacher).filter(
+        models.CourseTeacher.courseID == courseID).all()
+    for teacher in courseTeacher:
+        teacher = db.query(models.Teacher).filter(
+            models.Teacher.email == teacher.teacherEmail).first()
+        utils.sendEmail("Course Deleted",
+                        f"Hello {teacher.name}, {course.name} has been deleted from our platform. You are no longer a teacher for this course. Thank you.", teacher.email)
+
+    db.query(models.CourseTeacher).filter(
+        models.CourseTeacher.courseID == courseID).delete()
+    db.query(models.CourseFees).filter(
+        models.CourseFees.courseID == courseID).delete()
+    db.query(models.Courses).filter(models.Courses.id == courseID).delete()
+    db.commit()
+
+    return {"details": "DELETED"}
