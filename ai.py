@@ -11,6 +11,7 @@ import markdown
 import config
 
 
+
 def getAnswer(question):
     def to_markdown(text):
         text = text.replace('•', '  *')

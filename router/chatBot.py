@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
 
+
 router = APIRouter(
     tags=["ChatBot"],
     prefix="/chatBot"

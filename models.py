@@ -1,10 +1,13 @@
 
+from xmlrpc.client import Boolean
 from database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, BOOLEAN
 from sqlalchemy.orm import relationship
 
 from datetime import datetime, timedelta
 from sqlalchemy import DateTime
+
+
 
 
 class User(Base):
@@ -85,9 +88,23 @@ class CourseEnrollment(Base):
     enrollmentDate = Column(DateTime, default=datetime.utcnow)
 
 
+
 class CourseTeacher(Base):
     __tablename__ = "courseTeachers"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     courseID = Column(Integer, ForeignKey("courses.id"))
     teacherEmail = Column(String, ForeignKey("teachers.email"))
     teacherUserName = Column(String)
+
+class MoneyReceived(Base):
+    __tablename__ = "moneyReceived"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    courseID = Column(Integer, ForeignKey("courses.id"))
+    studentEmail = Column(String, ForeignKey("students.email"))
+    studentUserName = Column(String)
+    amount = Column(Integer)
+    enrollementDate = Column(DateTime, default=datetime.utcnow)
+    paid = Column(BOOLEAN, default=False)
+    paymentDate = Column(DateTime, default=datetime.utcnow)
+
+
