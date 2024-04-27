@@ -109,6 +109,10 @@ def buyCourse(course_id: int, db: Session = Depends(database.get_db), currentUse
     db.commit()
     db.refresh(enrollment)
 
+    utils.sendEmail("Welcome to our platform",
+                    f"Hello {student.name}, Welcome to our platform. You have successfully enrolled in the {courseName}. Make your payment. Thank you.", student.email)
+
+    
     
 
     return {
