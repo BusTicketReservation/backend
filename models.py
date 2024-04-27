@@ -108,3 +108,13 @@ class MoneyReceived(Base):
     paymentDate = Column(DateTime, default=datetime.utcnow)
 
 
+class DuePayemts(Base):
+    __tablename__ = "duePayments"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    courseID = Column(Integer, ForeignKey("courses.id"))
+    studentEmail = Column(String, ForeignKey("students.email"))
+    studentUserName = Column(String)
+    amount = Column(Integer)
+    dueDate = Column(DateTime, default=datetime.utcnow)
+    paid = Column(BOOLEAN, default=False)
+    paymentDate = Column(DateTime, default=datetime.utcnow)

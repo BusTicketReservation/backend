@@ -90,13 +90,12 @@ def buyCourse(course_id: int, db: Session = Depends(database.get_db), currentUse
 
     courseFee = db.query(models.CourseFees).filter(
         models.CourseFees.courseID == course_id).first()
-    
+
     student = db.query(models.Student).filter(
         models.Student.email == currentUser.email).first()
-    
+
     if db.query(models.CourseEnrollment).filter(models.CourseEnrollment.courseID == course_id, models.CourseEnrollment.studentEmail == currentUser.email).first():
         raise HTTPException(status_code=400, detail="alreadyEnrolled")
-    
 
     if datetime.datetime.now() < courseFee.discountUpTo:
         fees = courseFee.fees - (courseFee.fees * courseFee.discount / 100)
@@ -109,12 +108,16 @@ def buyCourse(course_id: int, db: Session = Depends(database.get_db), currentUse
     db.commit()
     db.refresh(enrollment)
 
-    utils.sendEmail("Welcome to our platform",
-                    f"Hello {student.name}, Welcome to our platform. You have successfully enrolled in the {courseName}. Make your payment. Thank you.", student.email)
+    duePayment = models.DuePayemts(
+        courseID=course_id, studentEmail=currentUser.email, studentUserName=currentUser.userName, amount=fees, dueDate=datetime.datetime.now() + datetime.timedelta(days=7), paid=False
+    )
 
-    
-    
+    db.add(duePayment)
+    db.commit()
+    db.refresh(duePayment)
 
+    utils.sendEmail("Course Enrollment",
+                    f"Hello {student.name}, You have enrolled in {courseName}. Your due payment is {fees}. You have to pay this amount within 7 days. Thank you.", student.email)
     return {
         "courseName": courseName,
         "courseID": course_id,
