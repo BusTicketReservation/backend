@@ -1,3 +1,4 @@
+import datetime
 import models
 import schemas
 import utils
@@ -246,3 +247,53 @@ def deleteCourse(courseID: int, db: Session = Depends(database.get_db), currentU
     db.commit()
 
     return {"details": "DELETED"}
+
+
+@router.post("/postBlog",  status_code=201)
+def postBlog(blog: schemas.Blog, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+    if currentUser.role != "FOUNDER":
+        raise HTTPException(status_code=400, detail="error")
+    blog = models.Blog(title=blog.title, content=blog.content, author=currentUser.userName, timestamp=datetime.datetime.now(), edited=False)
+    db.add(blog)
+    db.commit()
+    db.refresh(blog)
+    utils.sendEmail ("New Blog Post",
+                    f"Hello {currentUser.name}, A new blog post {blog.title} has been posted on our platform. Thank you.", currentUser.email)
+    return blog
+
+
+@router.delete("/deleteBlog/{blogID}", status_code=200)
+def deleteBlog(blogID: int, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+    if currentUser.role != "FOUNDER":
+        raise HTTPException(status_code=400, detail="error")
+    blog = db.query(models.Blog).filter(models.Blog.id == blogID).first()
+    title = blog.title
+    if not blog:
+        raise HTTPException(status_code=400, detail="blogError")
+    db.query(models.Blog).filter(models.Blog.id == blogID).delete()
+    db.commit()
+
+    utils.sendEmail("Blog Deleted",
+                    f"Hello {currentUser.name}, A blog post {title} has been deleted from our platform. Thank you.", currentUser.email)
+
+    return {"details": "DELETED"}
+
+
+@router.put("/editBlog/{blogID}", status_code=200)
+def editBlog(blogID: int, update: schemas.Blog, db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+    if currentUser.role != "FOUNDER":
+        raise HTTPException(status_code=400, detail="error")
+    blog = db.query(models.Blog).filter(models.Blog.id == blogID).first()
+    if not blog:
+        raise HTTPException(status_code=400, detail="blogError")
+    blog.title = update.title
+    blog.content = update.content
+    blog.edited = True
+    blog.timestamp = datetime.datetime.now()
+    db.commit()
+    db.refresh(blog)
+
+    utils.sendEmail("Blog Edited",
+                    f"Hello {currentUser.name}, A blog post {blog.title} has been edited on our platform. Thank you.", currentUser.email)
+
+    return blog

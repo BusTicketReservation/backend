@@ -197,3 +197,8 @@ class Remove(BaseModel):
 
     class Config:
         orm_mode = True
+
+class Blog(BaseModel):
+    title: str
+    content: str
+    

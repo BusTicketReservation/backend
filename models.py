@@ -118,3 +118,13 @@ class DuePayemts(Base):
     dueDate = Column(DateTime, default=datetime.utcnow)
     paid = Column(BOOLEAN, default=False)
     paymentDate = Column(DateTime, default=datetime.utcnow)
+
+
+class Blog(Base):
+    __tablename__ = "blogs"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    title = Column(String)
+    content = Column(String)
+    author = Column(String, ForeignKey("users.userName"))
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    edited = Column(BOOLEAN, default=False)
