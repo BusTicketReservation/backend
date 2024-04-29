@@ -7,7 +7,7 @@ import models
 import utils
 from database import engine
 
-from router import auth, founder, student, practice, teacher, chatBot, courses
+from router import auth, founder, student, practice, teacher, chatBot, courses, allUser
 
 import config
 
@@ -45,4 +45,6 @@ app.include_router(teacher.router)
 app.include_router(chatBot.router)
 
 app.include_router(courses.router)
+
+app.include_router(allUser.router)
 
