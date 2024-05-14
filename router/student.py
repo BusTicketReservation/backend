@@ -128,3 +128,16 @@ def buyCourse(course_id: int, db: Session = Depends(database.get_db), currentUse
         "enrollmentDate": datetime.datetime.now(),
         "paid": False
     }
+
+
+@router.get("/myCourses", status_code=200)
+def getMyCourses(db: Session = Depends(database.get_db), currentUser=Depends(oauth2.getCurrentUser)):
+    if currentUser.role != "STUDENT":
+        raise HTTPException(status_code=400, detail="roleError")
+    if not db.query(models.Student).filter(models.Student.email == currentUser.email).first():
+        raise HTTPException(status_code=400, detail="emailError")
+
+    courses = db.query(models.Courses).join(models.CourseEnrollment, models.Courses.id == models.CourseEnrollment.courseID).filter(
+        models.CourseEnrollment.studentEmail == currentUser.email).all()
+
+    return courses
